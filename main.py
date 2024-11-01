@@ -13,8 +13,12 @@ class DMXEmulator:
     def __init__(self, master):
         self.master = master
         self.master.title("DMX Light Emulator")
-        self.canvas = ctk.CTkCanvas(master, width=400, height=400, bg='#2e2e2e', highlightthickness=0)  # Dark grey color
+        
+        # Create a canvas to display the light
+        self.canvas = ctk.CTkCanvas(master, width=400, height=400, bg='#2e2e2e', highlightthickness=0)
         self.canvas.pack(fill=ctk.BOTH, expand=True)
+        
+        # Create an oval to represent the light
         self.light = self.canvas.create_oval(150, 150, 250, 250, fill='black')
         
         # Add a Text widget to display DMX data
@@ -25,6 +29,7 @@ class DMXEmulator:
         self.master.bind('<Configure>', self.resize)
 
     def update_light(self, r, g, b, data):
+        # Update the color of the light
         color = f'#{r:02x}{g:02x}{b:02x}'
         self.canvas.itemconfig(self.light, fill=color)
         
@@ -41,7 +46,7 @@ class DMXEmulator:
 def receive_dmx_command(emulator, sock):
     while True:
         try:
-            data, _ = sock.recvfrom(65535)
+            data, _ = sock.recvfrom(1024)  # Reduce buffer size to 1024 bytes
             if len(data) >= 21:  # Ensure the packet is long enough to contain DMX data
                 r, g, b = struct.unpack('BBB', data[18:21])
                 emulator.master.after(0, emulator.update_light, r, g, b, data)
@@ -52,12 +57,14 @@ if __name__ == "__main__":
     root = ctk.CTk()
     emulator = DMXEmulator(root)
 
+    # Create and configure the socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.bind(('0.0.0.0', PORT))  # Bind to all interfaces on port 6454 (default for Art-Net)
+    sock.bind(('0.0.0.0', PORT))  # Bind to all interfaces on the specified port
     sock.setblocking(False)
 
-    # Start the process of receiving DMX commands
+    # Start the process of receiving DMX commands in a separate thread
     dmx_thread = threading.Thread(target=receive_dmx_command, args=(emulator, sock), daemon=True)
     dmx_thread.start()
 
+    # Start the Tkinter main loop
     root.mainloop()
