@@ -13,13 +13,25 @@ A simple program that visualizes RGB DMX / ArtNet data. This tool is designed fo
 ## Download
 Feel free to download a copy of the executable from the releases page: https://github.com/fredeerock/simpleDmxVisualizer/releases. 
 
-## Requirements
+## Usage
+
+2. The DMX Visualizer window will open, displaying a black oval representing the light.
+
+3. Send DMX data to the visualizer on port 6454. The oval will change color based on the received RGB values.
+
+4. The DMX data will be displayed in decimal format in the text box below the canvas, excluding the first 17 values.
+
+5. Adjust the starting index for the DMX data using the entry box and update button.
+
+## Running from Source
+
+### Requirements
 
 - Python 3.x
 - `customtkinter` library
 - Standard libraries: `socket`, `struct`, `threading`
 
-## Installation
+### Installation
 
 1. Clone the repository:
     ```sh
@@ -32,17 +44,7 @@ Feel free to download a copy of the executable from the releases page: https://g
     pip install customtkinter
     ```
 
-## Usage
-
-1. Run the `main.py` script:
+3. Run the `main.py` script:
     ```sh
     python main.py
     ```
-
-2. The DMX Visualizer window will open, displaying a black oval representing the light.
-
-3. Send DMX data to the visualizer on port 6454. The oval will change color based on the received RGB values.
-
-4. The DMX data will be displayed in decimal format in the text box below the canvas, excluding the first 17 values.
-
-5. Adjust the starting index for the DMX data using the entry box and update button.
